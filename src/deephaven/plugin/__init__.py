@@ -19,6 +19,11 @@ class Registration(abc.ABC):
 
     @classmethod
     @abc.abstractmethod
+    def init(cls) -> None:
+        pass
+
+    @classmethod
+    @abc.abstractmethod
     def register_into(cls, callback: Callback) -> None:
         pass
 
@@ -50,6 +55,11 @@ def collect_registration_classes():
     return [e.load() for e in collect_registration_entrypoints()]
 
 
+def initialize_all():
+    for registration_cls in collect_registration_classes():
+        registration_cls.init()
+
+
 def register_all_into(callback: Registration.Callback):
     for registration_cls in collect_registration_classes():
         registration_cls.register_into(callback)
@@ -69,3 +79,19 @@ def list_plugins():
         plugins = registration_cls.collect_plugins()
         output += ''.join([f'\n    {plugin}' for plugin in plugins])
     print(output)
+
+
+def list_registrations_console():
+    """
+    Entrypoint for the console script deephaven-plugin-list-registrations
+    """
+    # note: don't need to initialize the registrations unless registering into
+    list_registrations()
+
+
+def list_plugins_console():
+    """
+    Entrypoint for the console script deephaven-plugin-list-plugins
+    """
+    initialize_all()
+    list_plugins()
