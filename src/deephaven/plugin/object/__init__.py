@@ -1,20 +1,58 @@
 import abc
+from typing import Optional, Union, Type
 
-from .. import Plugin
+from .. import Plugin, Registration, register_all_into
+
+
+def has_object_type_plugin(object) -> bool:
+    class IsObjectType(Registration.Callback):
+        def __init__(self) -> None:
+            self._found = False
+
+        def register(self, plugin: Union[Plugin, Type[Plugin]]) -> None:
+            if self._found:
+                return
+            if isinstance(plugin, type):
+                if not issubclass(plugin, ObjectType):
+                    return
+                plugin = plugin()
+            if isinstance(plugin, ObjectType):
+                self._found = plugin.is_type(object)
+
+        @property
+        def found(self) -> bool:
+            return self._found
+    visitor = IsObjectType()
+    register_all_into(visitor)
+    return visitor.found
 
 
 class Reference:
-    def __init__(self, id: bytes):
-        self._id = id
+    def __init__(self, index: int, type: Optional[str], ticket: bytes):
+        self._index = index
+        self._type = type
+        self._ticket = ticket
 
     @property
-    def id(self) -> bytes:
-        return self._id
+    def index(self) -> int:
+        return self._index
+
+    @property
+    def type(self) -> Optional[str]:
+        return self._type
+
+    @property
+    def ticket(self) -> bytes:
+        return self._ticket
 
 
 class Exporter(abc.ABC):
     @abc.abstractmethod
-    def new_server_side_reference(self, object) -> Reference:
+    def reference(self, object) -> Reference:
+        pass
+
+    @abc.abstractmethod
+    def new_reference(self, object) -> Reference:
         pass
 
 
