@@ -1,7 +1,7 @@
 import abc
 from typing import Union, Type
 
-__version__ = '0.0.1.dev3'
+__version__ = '0.0.1.dev4'
 
 DEEPHAVEN_PLUGIN_ENTRY_KEY = 'deephaven.plugin'
 DEEPHAVEN_PLUGIN_REGISTRATION_CLASS = 'registration_cls'
@@ -39,6 +39,11 @@ def collect_registration_entrypoints():
     import sys
     if sys.version_info < (3, 8):
         from importlib_metadata import entry_points
+    elif sys.version_info < (3, 10):
+        from importlib.metadata import entry_points as ep
+
+        def entry_points(group, name):
+            return [e for e in ep()[group] if e.name == name]
     else:
         from importlib.metadata import entry_points
     return entry_points(
