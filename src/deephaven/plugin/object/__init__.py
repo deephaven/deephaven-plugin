@@ -5,10 +5,9 @@ from .. import Plugin, Registration, register_all_into
 
 
 class Reference:
-    def __init__(self, index: int, type: Optional[str], ticket: bytes):
+    def __init__(self, index: int, type: Optional[str]):
         self._index = index
         self._type = type
-        self._ticket = ticket
 
     @property
     def index(self) -> int:
@@ -17,10 +16,6 @@ class Reference:
     @property
     def type(self) -> Optional[str]:
         return self._type
-
-    @property
-    def ticket(self) -> bytes:
-        return self._ticket
 
 
 class Exporter(abc.ABC):
