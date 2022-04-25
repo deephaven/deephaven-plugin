@@ -1,7 +1,7 @@
 import abc
 from typing import Union, Type
 
-__version__ = '0.0.1.dev5'
+__version__ = '0.1.0'
 
 DEEPHAVEN_PLUGIN_ENTRY_KEY = 'deephaven.plugin'
 DEEPHAVEN_PLUGIN_REGISTRATION_CLASS = 'registration_cls'
