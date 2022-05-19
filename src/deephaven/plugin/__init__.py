@@ -41,9 +41,10 @@ def collect_registration_entrypoints():
         from importlib_metadata import entry_points
     elif sys.version_info < (3, 10):
         from importlib.metadata import entry_points as ep
-
         def entry_points(group, name):
-            return [e for e in ep()[group] if e.name == name]
+            # Looks to be a bug in 3.8, 3.9 where entries are doubled up
+            entries = set(ep()[group] or [])
+            return [e for e in entries if e.name == name]
     else:
         from importlib.metadata import entry_points
     return entry_points(
