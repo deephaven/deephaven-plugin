@@ -1,7 +1,7 @@
 import abc
 from typing import Optional, Union, Type
 
-from .. import Plugin, Registration, register_all_into
+from . import Plugin, Registration, register_all_into
 
 
 class Reference:
