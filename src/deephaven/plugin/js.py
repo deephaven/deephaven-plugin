@@ -18,20 +18,20 @@ class JsType(Plugin):
         """Returns package.json as a dict"""
         with self.path() as path:
             with open(path) as file:
-                return json.load(file) 
+                return json.load(file)
 
     @property
     def name(self) -> str:
         """Returns the name field from package.json"""
-        return self.package_dict()['name']
+        return self.package_dict()["name"]
 
     @property
     def version(self) -> str:
         """Returns the version field from package.json"""
-        return self.package_dict()['version']
+        return self.package_dict()["version"]
 
     def __str__(self) -> str:
         pd = self.package_dict()
-        name = pd['name']
-        version = pd['version']
+        name = pd["name"]
+        version = pd["version"]
         return f"{name}@{version}"

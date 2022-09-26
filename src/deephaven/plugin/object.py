@@ -6,6 +6,7 @@ from . import Plugin, Registration, register_all_into
 
 class Reference:
     """A reference."""
+
     def __init__(self, index: int, type: Optional[str]):
         self._index = index
         self._type = type
@@ -24,11 +25,11 @@ class Reference:
 
 class Exporter(abc.ABC):
     """The interface for creating new references during ObjectType.to_bytes."""
+
     @abc.abstractmethod
-    def reference(self,
-                  object,
-                  allow_unknown_type: bool = False,
-                  force_new: bool = False) -> Optional[Reference]:
+    def reference(
+        self, object, allow_unknown_type: bool = False, force_new: bool = False
+    ) -> Optional[Reference]:
         """Gets the reference for object if it has already been created and force_new is False,
         otherwise creates a new one. If allow_unknown_type is False, and no type can be found, no
         reference will be created."""
@@ -37,7 +38,7 @@ class Exporter(abc.ABC):
 
 class ObjectType(Plugin):
     """An object type plugin. Useful for serializing custom objects between the server / client."""
-    
+
     @property
     @abc.abstractmethod
     def name(self) -> str:
@@ -74,6 +75,7 @@ def find_object_type(object) -> Optional[ObjectType]:
         @property
         def found(self) -> Optional[ObjectType]:
             return self._found
+
     visitor = Visitor()
     register_all_into(visitor)
     return visitor.found
