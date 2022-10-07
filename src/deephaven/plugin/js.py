@@ -5,8 +5,8 @@ import typing
 from . import Plugin
 
 
-class JsType(Plugin):
-    """A javascript type plugin. Useful for adding custom javascript code to the server."""
+class JsPlugin(Plugin):
+    """A js plugin. Useful for adding custom code to the server that can be resolved ."""
 
     @abc.abstractmethod
     def distribution_path(self) -> typing.Generator[pathlib.Path, None, None]:
