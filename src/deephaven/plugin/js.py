@@ -6,7 +6,7 @@ from . import Plugin
 
 
 class JsPlugin(Plugin):
-    """A js plugin. Useful for adding custom code to the server that can be resolved ."""
+    """A js plugin. Useful for adding custom JS code to the server that can be passed to the web client."""
 
     @abc.abstractmethod
     def distribution_path(self) -> typing.Generator[pathlib.Path, None, None]:
