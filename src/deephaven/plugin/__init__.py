@@ -1,10 +1,10 @@
 import abc
 from typing import Union, Type
 
-__version__ = '0.3.0.dev0'
+__version__ = "0.3.0.dev3"
 
-DEEPHAVEN_PLUGIN_ENTRY_KEY = 'deephaven.plugin'
-DEEPHAVEN_PLUGIN_REGISTRATION_CLASS = 'registration_cls'
+DEEPHAVEN_PLUGIN_ENTRY_KEY = "deephaven.plugin"
+DEEPHAVEN_PLUGIN_REGISTRATION_CLASS = "registration_cls"
 
 
 class Plugin(abc.ABC):
@@ -30,6 +30,7 @@ class Registration(abc.ABC):
 
             def register(self, plugin: Union[Plugin, Type[Plugin]]) -> None:
                 self._output.append(plugin)
+
         collector = Collector()
         cls.register_into(collector)
         return collector._output
@@ -37,19 +38,25 @@ class Registration(abc.ABC):
 
 def collect_registration_entrypoints():
     import sys
+
     if sys.version_info < (3, 8):
         from importlib_metadata import entry_points
     elif sys.version_info < (3, 10):
         from importlib.metadata import entry_points as ep
+
         def entry_points(group, name):
             # Looks to be a bug in 3.8, 3.9 where entries are doubled up
             entries = set(ep()[group] or [])
             return [e for e in entries if e.name == name]
+
     else:
         from importlib.metadata import entry_points
-    return entry_points(
-        group=DEEPHAVEN_PLUGIN_ENTRY_KEY,
-        name=DEEPHAVEN_PLUGIN_REGISTRATION_CLASS) or []
+    return (
+        entry_points(
+            group=DEEPHAVEN_PLUGIN_ENTRY_KEY, name=DEEPHAVEN_PLUGIN_REGISTRATION_CLASS
+        )
+        or []
+    )
 
 
 def collect_registration_classes():
@@ -62,18 +69,18 @@ def register_all_into(callback: Registration.Callback):
 
 
 def list_registrations():
-    output = 'Listing Deephaven Plugin registrations:'
+    output = "Listing Deephaven Plugin registrations:"
     for registration_cls in collect_registration_classes():
-        output += f'\n  {registration_cls}'
+        output += f"\n  {registration_cls}"
     print(output)
 
 
 def list_plugins():
-    output = 'Listing Deephaven Plugins:'
+    output = "Listing Deephaven Plugins:"
     for registration_cls in collect_registration_classes():
-        output += f'\n  {registration_cls}'
+        output += f"\n  {registration_cls}"
         plugins = registration_cls.collect_plugins()
-        output += ''.join([f'\n    {plugin}' for plugin in plugins])
+        output += "".join([f"\n    {plugin}" for plugin in plugins])
     print(output)
 
 
