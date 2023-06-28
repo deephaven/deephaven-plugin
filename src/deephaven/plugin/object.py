@@ -39,6 +39,9 @@ class Exporter(abc.ABC):
 class ObjectType(Plugin):
     """An object type plugin. Useful for serializing custom objects between the server / client."""
 
+    def __init__(self):
+        self._message_sender = None
+
     @property
     @abc.abstractmethod
     def name(self) -> str:
@@ -53,6 +56,23 @@ class ObjectType(Plugin):
     @abc.abstractmethod
     def to_bytes(self, exporter: Exporter, object) -> bytes:
         """Serializes object into bytes. Must only be called with a compatible object."""
+        pass
+
+    def set_message_sender(self, sender):
+        """Should NOT be called in Python. Used by server plugin adapter to pass the message sender to the object"""
+        self._message_sender = sender
+
+    def send_message(self, message: str, objects=None):
+        """Used to send a message to the client. Can also add objects to export with the message."""
+        if objects is None:
+            objects = []
+        if self._message_sender is not None:
+            self._message_sender(message, objects)
+        pass
+
+    @abc.abstractmethod
+    def handle_message(self, message):
+        """Called when the client sends a message to the plugin."""
         pass
 
 
