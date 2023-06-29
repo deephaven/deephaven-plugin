@@ -70,8 +70,7 @@ class ObjectType(Plugin):
             self._message_sender(message, objects)
         pass
 
-    @abc.abstractmethod
-    def handle_message(self, message):
+    def handle_message(self, message: str):
         """Called when the client sends a message to the plugin."""
         pass
 
