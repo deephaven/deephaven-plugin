@@ -23,7 +23,9 @@ class Exporter(abc.ABC):
 
     @abc.abstractmethod
     def reference(self, obj: object) -> Reference:
-        """Creates a reference for an object. Each reference """
+        """Creates a reference for an object, ensuring that it is exported for use on the client. Each time this is
+        called, a new reference will be returned, with the index of the export in the data to be sent to the client.
+        """
         pass
 
 
@@ -36,12 +38,12 @@ class MessageStream(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def on_close(self):
+    def on_close(self) -> None:
         """Closes the stream on both ends. No further messages can be sent or received."""
         pass
 
     @abc.abstractmethod
-    def on_data(self, payload: bytes, references: List[Any]):
+    def on_data(self, payload: bytes, references: List[Any]) -> None:
         """Transmits data to the remote end of the stream. This can consist of a binary payload and references to
         objects on the server.
         """
@@ -50,9 +52,6 @@ class MessageStream(abc.ABC):
 
 class ObjectType(Plugin):
     """An object type plugin. Useful for serializing custom objects between the server / client."""
-
-    def __init__(self):
-        pass
 
     @property
     @abc.abstractmethod
@@ -70,8 +69,7 @@ class BidirectionObjectType(ObjectType):
     """Base class for an object type that can continue to send responses to the client, or receive requests
     from the server even after it is fetched.
     """
-    def __init__(self):
-        pass
+
     @abc.abstractmethod
     def create_client_connection(self, obj: object, connection: MessageStream) -> MessageStream:
         """Signals creation of a client stream to the specified object. The returned MessageStream implementation will
@@ -88,32 +86,8 @@ class FetchOnlyObjectType(ObjectType):
     """Base class for an object type which will only be fetched once, rather than support streaming requests or
     responses.
     """
+
     @abc.abstractmethod
     def to_bytes(self, exporter: Exporter, obj: Any) -> bytes:
-        """Serializes object into bytes. Must only be called with a compatible object."""
+        """Serializes obj into bytes. Must only be called with a compatible object."""
         pass
-
-
-def find_object_type(obj: Any) -> Optional[ObjectType]:
-    class Visitor(Registration.Callback):
-        def __init__(self) -> None:
-            self._found = None
-
-        def register(self, plugin: Union[Plugin, Type[Plugin]]) -> None:
-            if self._found:
-                return
-            if isinstance(plugin, type):
-                if not issubclass(plugin, ObjectType):
-                    return
-                plugin = plugin()
-            if isinstance(plugin, ObjectType):
-                if plugin.is_type(obj):
-                    self._found = plugin
-
-        @property
-        def found(self) -> Optional[ObjectType]:
-            return self._found
-
-    visitor = Visitor()
-    register_all_into(visitor)
-    return visitor.found
