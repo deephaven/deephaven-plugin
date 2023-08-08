@@ -3,6 +3,10 @@ from typing import Optional, Union, Type, List, Any
 
 from . import Plugin, Registration, register_all_into
 
+"""
+Tools to create ObjectType plugins in Python to run on a Deephaven server.
+"""
+
 
 class Reference:
     """A reference."""
@@ -34,6 +38,7 @@ class MessageStream(abc.ABC):
     provide an instance of this interface for each incoming stream to invoke as messages arrive, and will
     likewise be given an instance of this interface to be able to send messages to the client.
     """
+
     def __init__(self):
         pass
 
