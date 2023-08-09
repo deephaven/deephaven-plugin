@@ -1,6 +1,10 @@
 import abc
 from typing import Union, Type
 
+"""
+The deephaven.plugin module provides an API and registration mechanism to add new behavior to the Deephaven
+server. Plugins should be registered by adding a Registration instance as an entrypoint to the Python package.
+"""
 __version__ = "0.4.0.dev0"
 
 DEEPHAVEN_PLUGIN_ENTRY_KEY = "deephaven.plugin"
@@ -11,15 +15,38 @@ class Plugin(abc.ABC):
     pass
 
 
+class Callback(abc.ABC):
+    """
+    An instance of Callback will be passed to Registration.register_into, to allow any number of plugins to be
+    registered.
+    """
+
+    @abc.abstractmethod
+    def register(self, plugin: Union[Plugin, Type[Plugin]]) -> None:
+        """
+        Registers a given plugin type for use in the Deephaven server. Should be called from from a Registration's
+        register_into method, so that it is available when the server expects it.
+        :param plugin: the plugin or plugin type to register on the server
+        :return:
+        """
+        pass
+
+
 class Registration(abc.ABC):
-    class Callback(abc.ABC):
-        @abc.abstractmethod
-        def register(self, plugin: Union[Plugin, Type[Plugin]]) -> None:
-            pass
+    """
+    Registration types should be set as the registration_cls for deephaven.plugin entrypoints for their package to
+    ensure that they are all run on server startup.
+    """
 
     @classmethod
     @abc.abstractmethod
     def register_into(cls, callback: Callback) -> None:
+        """
+        Implement this method and reference this Registration type from the package's entrypoint to ensure that any
+        provided plugins are available at server startup. Invoke callback.register() once for each provided plugin.
+        :param callback: invoke this once per plugin to register them for use in the server.
+        :return:
+        """
         pass
 
     @classmethod
