@@ -70,7 +70,7 @@ class ObjectType(Plugin):
         pass
 
 
-class BidirectionObjectType(ObjectType):
+class BidirectionalObjectType(ObjectType):
     """Base class for an object type that can continue to send responses to the client, or receive requests
     from the server even after it is fetched.
     """
