@@ -5,7 +5,7 @@ from typing import Union, Type
 The deephaven.plugin module provides an API and registration mechanism to add new behavior to the Deephaven
 server. Plugins should be registered by adding a Registration instance as an entrypoint to the Python package.
 """
-__version__ = "0.5.0.dev0"
+__version__ = "0.4.0.dev0"
 
 DEEPHAVEN_PLUGIN_ENTRY_KEY = "deephaven.plugin"
 DEEPHAVEN_PLUGIN_REGISTRATION_CLASS = "registration_cls"
