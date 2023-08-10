@@ -51,7 +51,7 @@ class Registration(abc.ABC):
 
     @classmethod
     def collect_plugins(cls):
-        class Collector(Registration.Callback):
+        class Collector(Callback):
             def __init__(self) -> None:
                 self._output = []
 
@@ -90,7 +90,7 @@ def collect_registration_classes():
     return [e.load() for e in collect_registration_entrypoints()]
 
 
-def register_all_into(callback: Registration.Callback):
+def register_all_into(callback: Callback):
     for registration_cls in collect_registration_classes():
         registration_cls.register_into(callback)
 
