@@ -6,29 +6,44 @@ from . import Plugin
 
 
 class JsPlugin(Plugin):
-    """A js plugin. Useful for adding custom JS code to the server that can be passed to the web client."""
+    """
+    A JS plugin is a Plugin that allows adding javascript code under the server's URL path "js-plugins/".
+    See https://github.com/deephaven/deephaven-plugins#js-plugins for more details about the underlying
+    construction for JS plugins.
+    """
 
     @abc.abstractmethod
-    def distribution_path(self) -> typing.Generator[pathlib.Path, None, None]:
-        """A generator that yields the distribution path directory."""
+    def root(self) -> typing.Generator[pathlib.Path, None, None]:
+        """
+        The root directory of the resources to serve. The root must exist.
+        """
         pass
 
     @property
     @abc.abstractmethod
     def name(self) -> str:
-        """The plugin name"""
+        """
+        The JS plugin name. The JS plugin contents will be served via the URL path "js-plugins/{name}/",
+        as well as included as the "name" field for the manifest entry in "js-plugins/manifest.json".
+        """
         pass
 
     @property
     @abc.abstractmethod
     def version(self) -> str:
-        """The plugin version"""
+        """
+        The JS plugin version. Will be included as the "version" field for the manifest entry in
+        js-plugins/manifest.json".
+        """
         pass
 
     @property
     @abc.abstractmethod
     def main(self) -> str:
-        """The main js file, the relative path with respect to distribution_path."""
+        """
+        The main JS file path, specified relative to root. The main JS file must exist. Will be included
+        as the "main" field for the manifest entry in "js-plugins/manifest.json".
+        """
         pass
 
     def __str__(self) -> str:
