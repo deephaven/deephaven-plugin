@@ -13,9 +13,9 @@ class JsPlugin(Plugin):
     """
 
     @abc.abstractmethod
-    def root_path(self) -> typing.ContextManager[pathlib.Path]:
+    def path(self) -> typing.ContextManager[pathlib.Path]:
         """
-        The root directory path of the resources to serve in a context manager. The root path must exist.
+        The directory path of the resources to serve in a context manager.
         """
         pass
 
