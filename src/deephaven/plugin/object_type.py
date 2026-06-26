@@ -1,5 +1,5 @@
 import abc
-from typing import Optional, Union, Type, List, Any
+from typing import Literal, Optional, Union, Type, List, Any
 
 from . import Plugin, Registration, register_all_into
 
@@ -68,6 +68,22 @@ class ObjectType(Plugin):
     def is_type(self, obj: Any) -> bool:
         """Returns True if, and only if, the object is compatible with this object type."""
         pass
+
+    def authorization_export_behavior(self) -> Literal["transform", "manual", "unset"]:
+        """Declares how the server should authorize the references this plugin exports to the client.
+
+        - ``"transform"``: the server applies the authorization transform to every reference this plugin exports,
+          in the requesting user's context. Use this when the plugin does not apply authorization itself.
+        - ``"manual"``: the plugin takes responsibility for authorizing its own exported references (for example by
+          calling ``deephaven.plugin_authorization.transform`` before passing objects to ``on_data``). The server
+          does not additionally transform them.
+        - ``"unset"`` (default): the plugin makes no declaration. The server's
+          ``PluginReferenceAuthorization.failClosed`` policy determines the effective behavior.
+
+        Returns:
+            One of ``"transform"``, ``"manual"``, or ``"unset"``.
+        """
+        return "unset"
 
 
 class BidirectionalObjectType(ObjectType):
